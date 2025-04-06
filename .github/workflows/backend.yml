@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install Node.js
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 20
@@ -24,11 +24,20 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
+      - name: Lint
+        run: pnpm lint
+
+      - name: Type Check
+        run: pnpm tsc --noEmit
+
+      - name: Run Tests
+        run: pnpm test
+
       - name: Build
         run: pnpm build
 
       - name: Prisma Generate
-        run: npx prisma generate
+        run: pnpm prisma generate
 
       - name: Deploy to Railway
         uses: railwayapp/railway-action@v1
