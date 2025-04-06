@@ -6,37 +6,40 @@ on:
       - main
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Código
+      - name: Checkout do código
         uses: actions/checkout@v3
 
-      - name: Configurar Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
           cache: 'pnpm'
 
-      - name: Configurar pnpm
+      - name: Instalar pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 8 # Especifique a versão desejada do pnpm
+          version: 10.7.1
 
-      - name: Instalar Dependências
+      - name: Instalar dependências
         run: pnpm install --frozen-lockfile
 
       - name: Gerar Prisma Client
         run: npx prisma generate
 
-      - name: Build da Aplicação
+      - name: Executar testes
+        run: pnpm test
+
+      - name: Build do projeto
         run: pnpm build
 
       - name: Instalar Railway CLI
         run: npm i -g @railway/cli
 
-      - name: Deploy para a Railway
+      - name: Deploy para Railway
         run: railway up --service ${{ secrets.RAILWAY_SERVICE_ID }}
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
