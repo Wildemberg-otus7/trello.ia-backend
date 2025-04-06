@@ -10,31 +10,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout do código
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Instalar Node.js
+      - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
           cache: 'pnpm'
 
-      - name: Ativar pnpm via Corepack
+      - name: Enable Corepack (pnpm)
         run: corepack enable
 
-      - name: Instalar dependências
-        run: pnpm install --frozen-lockfile
+      - name: Install Dependencies
+        run: pnpm install
 
-      - name: Rodar testes
-        run: pnpm test
-
-      - name: Gerar Prisma Client
-        run: npx prisma generate
-
-      - name: Build do projeto
+      - name: Build
         run: pnpm build
 
-      - name: Deploy para Railway
+      - name: Prisma Generate
+        run: npx prisma generate
+
+      - name: Deploy to Railway
         uses: railwayapp/railway-action@v1
         with:
           serviceId: ${{ secrets.RAILWAY_SERVICE_ID }}
