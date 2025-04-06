@@ -142,5 +142,3 @@ Será definida no lançamento oficial do repositório público.
 Desenvolvido por **Wildemberg de Jesus Oliveira**  
 Perfil: [LinkedIn](https://www.linkedin.com/in/wildemberg-de-jesus-oliveira/) – Desenvolvedor Fullstack Pleno
 ```
-
-Se quiser, posso gerar também o `README.md` para o repositório principal que conterá os dois projetos.
