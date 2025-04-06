@@ -1,132 +1,146 @@
-````md
-# 🧠 Trello.ia – Backend
-
-Backend da aplicação Trello.ia, desenvolvido com:
-
-- [NestJS](https://nestjs.com/) (v11)
-- [PostgreSQL](https://www.postgresql.org/)
-- [Prisma ORM](https://www.prisma.io/)
-- [JWT Auth](https://jwt.io/)
-- [Docker](https://www.docker.com/)
-- [Jest](https://jestjs.io/) para testes automatizados
+Claro! Aqui está o `README.md` atualizado para o **backend** do Trello.ia, mantendo tudo importante que já havia e incluindo o que você já configurou com sucesso:
 
 ---
 
-## 🚀 Requisitos
+```md
+# Trello.ia – Backend
 
-- Node.js 20+
-- PNPM (`npm install -g pnpm`)
-- Docker + Docker Compose
+API REST do projeto **Trello.ia**, um sistema de organização de tarefas estilo Trello com inteligência artificial integrada. Desenvolvido em **NestJS** com foco em escalabilidade, boas práticas e deploy em container.
 
 ---
 
-## 📦 Instalação
+## 🚀 Tecnologias Utilizadas
+
+- **NestJS** 11
+- **TypeScript**
+- **PostgreSQL** (via Docker)
+- **Prisma ORM**
+- **JWT** – Autenticação
+- **Jest + Supertest** – Testes unitários e E2E
+- **ESLint + Prettier**
+- **Docker + Docker Compose**
+- **.env** – Gerenciamento de variáveis de ambiente
+
+---
+
+## ✅ Funcionalidades já implementadas
+
+- Estrutura inicial completa com NestJS
+- Conexão com PostgreSQL usando Prisma
+- Modelagem e migrate do modelo **User**
+- Ambiente configurado com ESLint, Prettier e Jest
+- Testes unitários e E2E funcionando
+- Backend rodando via Docker na porta **3001**
+- Integração com banco de dados via container Docker (porta **5432**)
+
+---
+
+## 📁 Estrutura de Pastas
 
 ```bash
-pnpm install
-```
-````
-
----
-
-## ⚙️ Variáveis de Ambiente
-
-Crie um arquivo `.env` com:
-
-```env
-DATABASE_URL="postgresql://postgres:012345678@localhost:5432/trelloia"
-```
-
----
-
-## 🐳 Usando Docker para o banco
-
-```bash
-docker compose up -d
-```
-
-Para resetar com volume:
-
-```bash
-docker compose down -v
-docker compose up -d
+src/
+├── auth/               # Módulo de autenticação (em desenvolvimento)
+├── users/              # Módulo de usuários
+├── prisma/             # Serviço de conexão com Prisma
+├── config/             # Módulo global de variáveis de ambiente
+├── app.controller.ts   # Endpoint raiz
+├── app.module.ts       # Módulo principal
+├── app.service.ts      # Serviço raiz
+└── main.ts             # Ponto de entrada da aplicação
 ```
 
 ---
 
-## 🛠️ Migrations com Prisma
+## 🐳 Docker
 
-```bash
-pnpm prisma migrate dev --name init
-```
+### 🧱 docker-compose.yml (isolado)
 
-Para resetar:
+```yaml
+version: '3.8'
 
-```bash
-pnpm prisma migrate reset
+services:
+  backend:
+    build:
+      context: .
+    container_name: trelloia-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    container_name: trelloia-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 012345678
+      POSTGRES_DB: trelloia
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
 ```
 
 ---
 
 ## 🧪 Testes
 
-Rodar todos os testes:
+```bash
+pnpm test           # Executa testes unitários
+pnpm test:e2e       # Executa testes end-to-end
+pnpm test:cov       # Gera relatório de cobertura
+```
+
+---
+
+## ⚙️ Comandos úteis
 
 ```bash
-pnpm test
-```
-
-Modo watch:
-
-```bash
-pnpm test:watch
-```
-
-Coverage:
-
-```bash
-pnpm test:cov
+pnpm prisma migrate dev        # Rodar migrations
+pnpm prisma generate           # Gerar cliente Prisma
+pnpm prisma studio             # Abrir visualizador do banco
+pnpm run start:dev             # Iniciar com hot reload
+pnpm run build && pnpm start   # Build e iniciar em produção
 ```
 
 ---
 
-## ▶️ Rodando a aplicação
+## 🌐 Variáveis de ambiente
 
-```bash
-pnpm start:dev
+```env
+# .env
+DATABASE_URL="postgresql://postgres:012345678@localhost:5432/trelloia"
+JWT_SECRET="sua-chave-secreta"
+PORT=3000
 ```
 
 ---
 
-## 📁 Estrutura básica
+## 🧠 Objetivo
 
-```
-src/
-├── auth/      # Módulo de autenticação (JWT, login, registro)
-├── users/     # Módulo de usuários
-├── prisma/    # Serviço Prisma
-└── main.ts    # Bootstrap do NestJS
-```
+Criar uma API sólida que permita ao frontend:
+
+- Cadastrar e autenticar usuários
+- Gerenciar boards, listas e tarefas
+- Usar IA para sugerir automações e melhorias nas rotinas do usuário
 
 ---
 
-## ✅ Em breve
+## 📄 Licença
 
-- [ ] CRUD completo de usuários
-- [ ] Login com JWT
-- [ ] Validação com Guards e Decorators
-- [ ] Testes e2e de login/cadastro
-- [ ] Documentação com Swagger
+Será definida no lançamento oficial do repositório público.
 
 ---
 
-## 🧠 Autor
-
-Will – [GitHub](https://github.com/seuusuario)
-
+Desenvolvido por **Wildemberg de Jesus Oliveira**  
+Perfil: [LinkedIn](https://www.linkedin.com/in/wildemberg-de-jesus-oliveira/) – Desenvolvedor Fullstack Pleno
 ```
 
----
-
-Se quiser que eu gere ele direto no projeto como arquivo ou já prepare uma versão com badges (build, coverage, etc), só avisar.
-```
+Se quiser, posso gerar também o `README.md` para o repositório principal que conterá os dois projetos.
