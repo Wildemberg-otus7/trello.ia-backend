@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    container_name: trelloia-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 012345678
+      POSTGRES_DB: trelloia
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  backend:
+    build: .
+    container_name: trelloia-backend
+    restart: unless-stopped
+    ports:
+      - '3001:3000'
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    command: pnpm start:dev
+
+volumes:
+  pgdata:
