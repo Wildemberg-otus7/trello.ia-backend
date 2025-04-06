@@ -22,8 +22,10 @@ jobs:
           node-version: 20
           cache: 'pnpm'
 
-      - name: Instalar pnpm globalmente
-        run: npm install -g pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8 # Substitua pela versão desejada do pnpm
 
       - name: Instalar dependências
         run: pnpm install --frozen-lockfile
