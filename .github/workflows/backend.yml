@@ -1,12 +1,15 @@
-name: Deploy Backend to Railway
+name: Check Backend Before Deploy
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build-and-deploy:
+  check:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,19 +30,11 @@ jobs:
       - name: Instalar dependências
         run: pnpm install --frozen-lockfile
 
-      - name: Gerar Prisma Client
-        run: npx prisma generate
+      - name: Verificar build
+        run: pnpm build
 
       - name: Rodar testes
         run: pnpm test
 
-      - name: Build do projeto
-        run: pnpm build
-
-      - name: Instalar Railway CLI
-        run: npm install -g @railway/cli
-
-      - name: Deploy para Railway
-        run: railway up --service ${{ secrets.RAILWAY_SERVICE_ID }}
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+      - name: Verificar formatação
+        run: pnpm format --check
