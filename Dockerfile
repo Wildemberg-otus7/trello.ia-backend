@@ -29,5 +29,5 @@ RUN pnpm build
 # Expõe a porta padrão
 EXPOSE 3000
 
-# Comando para execução em dev
-CMD ["pnpm", "start:dev"]
+# Aplica migrations e sobe a aplicação (produção real)
+CMD ["sh", "-c", "pnpm prisma migrate deploy && pnpm start"]
