@@ -1,11 +1,7 @@
-Claro! Aqui está o `README.md` atualizado para o **backend** do Trello.ia, mantendo tudo importante que já havia e incluindo o que você já configurou com sucesso:
-
----
-
 ```md
 # Trello.ia – Backend
 
-API REST do projeto **Trello.ia**, um sistema de organização de tarefas estilo Trello com inteligência artificial integrada. Desenvolvido em **NestJS** com foco em escalabilidade, boas práticas e deploy em container.
+API REST do projeto **Trello.ia**, um sistema de organização de tarefas estilo Trello com inteligência artificial integrada. Desenvolvido em **NestJS** com foco em escalabilidade, boas práticas e arquitetura moderna.
 
 ---
 
@@ -13,7 +9,7 @@ API REST do projeto **Trello.ia**, um sistema de organização de tarefas estilo
 
 - **NestJS** 11
 - **TypeScript**
-- **PostgreSQL** (via Docker)
+- **PostgreSQL** (via Docker ou Railway)
 - **Prisma ORM**
 - **JWT** – Autenticação
 - **Jest + Supertest** – Testes unitários e E2E
@@ -32,6 +28,8 @@ API REST do projeto **Trello.ia**, um sistema de organização de tarefas estilo
 - Testes unitários e E2E funcionando
 - Backend rodando via Docker na porta **3001**
 - Integração com banco de dados via container Docker (porta **5432**)
+- Deploy gratuito via **Railway**
+- CI/CD automatizado com **GitHub Actions**
 
 ---
 
@@ -133,9 +131,15 @@ Criar uma API sólida que permita ao frontend:
 
 ---
 
+## 🛠️ Contribuições
+
+O backend também será **open source** com repositório público. Contribuições serão bem-vindas após o MVP.
+
+---
+
 ## 📄 Licença
 
-Será definida no lançamento oficial do repositório público.
+Em breve definida.
 
 ---
 
