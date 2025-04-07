@@ -16,8 +16,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18                # Use Node.js 18 (or your project's version)
-          cache: 'pnpm'                   # Enable PNPM dependency caching
-          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
         run: |
