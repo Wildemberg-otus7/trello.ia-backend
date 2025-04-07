@@ -1,4 +1,4 @@
-```md
+````md
 # Trello.ia – Backend
 
 API REST do projeto **Trello.ia**, um sistema de organização de tarefas estilo Trello com inteligência artificial integrada. Desenvolvido em **NestJS** com foco em escalabilidade, boas práticas e arquitetura moderna.
@@ -46,6 +46,7 @@ src/
 ├── app.service.ts      # Serviço raiz
 └── main.ts             # Ponto de entrada da aplicação
 ```
+````
 
 ---
 
@@ -63,7 +64,7 @@ services:
     container_name: trelloia-backend
     restart: unless-stopped
     ports:
-      - "3001:3000"
+      - '3001:3000'
     env_file:
       - .env
     depends_on:
@@ -78,7 +79,7 @@ services:
       POSTGRES_PASSWORD: 012345678
       POSTGRES_DB: trelloia
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -145,4 +146,7 @@ Em breve definida.
 
 Desenvolvido por **Wildemberg de Jesus Oliveira**  
 Perfil: [LinkedIn](https://www.linkedin.com/in/wildemberg-de-jesus-oliveira/) – Desenvolvedor Fullstack Pleno
+
+```
+
 ```

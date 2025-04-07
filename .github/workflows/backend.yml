@@ -9,38 +9,52 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Checkout do código
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Node.js 20
+      # 2. Instala Node.js 20
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
+      # 3. Instala pnpm manualmente (com corepack)
       - name: Install pnpm
         run: |
           corepack enable
           corepack prepare pnpm@10.7.1 --activate
           pnpm -v
 
+      # 4. Instala dependências
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # 5. Gera Prisma Client (corrige os erros de tipo no build)
+      - name: Generate Prisma Client
+        run: pnpm exec prisma generate
+
+      # 6. Verifica formatação de código
       - name: Format code
         run: pnpm format
 
+      # 7. Roda testes unitários
       - name: Run unit tests
         run: pnpm test
 
+      # 8. Roda testes e2e
       - name: Run e2e tests
         run: pnpm test:e2e
 
+      # 9. Build do projeto
       - name: Build project
         run: pnpm build
 
+      # 10. Instala CLI do Railway
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
+      # 11. Deploy para o Railway
       - name: Deploy to Railway
         run: npx railway up --service ${{ secrets.RAILWAY_SERVICE_ID }} --project ${{ secrets.RAILWAY_PROJECT_ID }}
         env:
