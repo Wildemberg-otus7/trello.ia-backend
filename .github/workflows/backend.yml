@@ -56,6 +56,6 @@ jobs:
 
       # 11. Deploy para o Railway
       - name: Deploy to Railway
-        run: npx railway up --service ${{ secrets.RAILWAY_SERVICE_ID }} --project ${{ secrets.RAILWAY_PROJECT_ID }}
+        run: npx railway up --service ${{ secrets.RAILWAY_SERVICE_ID }} -- --project ${{ secrets.RAILWAY_PROJECT_ID }}
         env:
           RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
