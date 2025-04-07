@@ -1,50 +1,60 @@
-name: Deploy Backend
+name: CI/CD
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]  # Deploy on pushes to main (adjust as needed)
 
 jobs:
-  build-and-deploy:
+  build-test-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: 🔧 Setup Node.js and PNPM
+        uses: actions/setup-node@v3
         with:
-          node-version: 20
-
-      - name: Install pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@10.7.1 --activate
-          pnpm -v
+          node-version: 18                # Use Node.js 18 (or your project's version)
+          cache: 'pnpm'                   # Enable PNPM dependency caching
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          npm install -g pnpm             # Install PNPM package manager
+          pnpm install                    # Install project dependencies
 
       - name: Generate Prisma Client
-        run: pnpm exec prisma generate
+        run: pnpm exec prisma generate    # Regenerate the Prisma client
 
-      - name: Format code
-        run: pnpm format
+      - name: Check code formatting (Prettier)
+        run: pnpm exec prettier --check . # Verify that code is formatted
 
-      - name: Run unit tests
-        run: pnpm test
+      - name: Run unit tests (Jest)
+        env:
+          NODE_ENV: test                  # Set NODE_ENV if required by your tests
+        run: pnpm run test
 
-      - name: Run e2e tests
-        run: pnpm test:e2e
+      - name: Run end-to-end tests (Jest)
+        env:
+          NODE_ENV: test
+        run: pnpm run test:e2e
 
       - name: Build project
-        run: pnpm build
+        run: pnpm run build               # Compile the NestJS project (e.g., to dist/ directory)
 
       - name: Install Railway CLI
-        run: npm install -g @railway/cli
+        run: npm install -g @railway/cli   # Install the Railway CLI globally
 
       - name: Deploy to Railway
-        run: railway up --service ${{ secrets.RAILWAY_SERVICE_ID }} --environment ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
         env:
-          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+          # Provide Railway credentials from repository secrets
+          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}         # Account/Team API token for Railway
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+          RAILWAY_ENVIRONMENT_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
+          RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
+        run: |
+          # Link to the Railway project, environment, and service using the provided IDs
+          railway link --project=$RAILWAY_PROJECT_ID --environment=$RAILWAY_ENVIRONMENT_ID --service=$RAILWAY_SERVICE_ID
+          # Deploy the application (detached mode so the action doesn't wait for logs)
+          railway up --detach
