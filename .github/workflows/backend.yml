@@ -46,13 +46,5 @@ jobs:
 
       - name: Deploy to Railway
         env:
-          # Provide Railway credentials from repository secrets
-          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }} # Account/Team API token for Railway
-          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
-          RAILWAY_ENVIRONMENT_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
-          RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
-        run: |
-          # Link to the Railway project, environment, and service using the provided IDs
-          railway link --project=$RAILWAY_PROJECT_ID --environment=$RAILWAY_ENVIRONMENT_ID --service=$RAILWAY_SERVICE_ID
-          # Deploy the application (detached mode so the action doesn't wait for logs)
-          railway up --detach
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway up --detach
