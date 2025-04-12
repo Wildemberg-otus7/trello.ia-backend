@@ -12,3 +12,4 @@ dist
 Dockerfile
 Dockerfile.dev
 .pnpm-store
+cookies.txt

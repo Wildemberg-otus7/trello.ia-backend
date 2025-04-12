@@ -36,6 +36,8 @@ describe('AuthService', () => {
 
     authService = module.get<AuthService>(AuthService);
     jwtService = module.get<JwtService>(JwtService) as jest.Mocked<JwtService>;
+
+    jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => jest.clearAllMocks());
