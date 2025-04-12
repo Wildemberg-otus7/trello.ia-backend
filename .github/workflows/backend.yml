@@ -39,6 +39,9 @@ jobs:
       - name: Generate Prisma Client
         run: pnpm exec prisma generate
 
+      - name: Run Prisma Migrate Deploy (cria tabelas no Railway)
+        run: pnpm exec prisma migrate deploy
+
       - name: Check code formatting (Prettier)
         run: pnpm exec prettier --check .
 
