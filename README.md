@@ -1,58 +1,82 @@
-````md
 # Trello.ia – Backend
 
-API REST do projeto **Trello.ia**, um sistema de organização de tarefas estilo Trello com inteligência artificial integrada. Desenvolvido em **NestJS** com foco em escalabilidade, boas práticas e arquitetura moderna.
+API REST do projeto **Trello.ia**, um sistema de organização de tarefas inspirado no Trello com recursos de **Inteligência Artificial** embarcados. Desenvolvido com foco em **escalabilidade, arquitetura limpa**, testes e **open source**.
 
 ---
 
 ## 🚀 Tecnologias Utilizadas
 
-- **NestJS** 11
+- **NestJS** 11 (Node.js)
 - **TypeScript**
-- **PostgreSQL** (via Docker ou Railway)
-- **Prisma ORM**
+- **Prisma ORM + PostgreSQL** (Railway ou Docker)
 - **JWT** – Autenticação
 - **Jest + Supertest** – Testes unitários e E2E
-- **ESLint + Prettier**
+- **ESLint + Prettier** – Linting e formatação
 - **Docker + Docker Compose**
-- **.env** – Gerenciamento de variáveis de ambiente
+- **CI/CD com GitHub Actions**
+
+---
+
+## 📅 Scripts Disponíveis (via terminal local)
+
+```bash
+pnpm start:dev     # Roda localmente com hot reload
+pnpm build         # Compila o projeto para produção
+pnpm start         # Inicia a versão de produção
+pnpm prisma generate  # Gera o cliente Prisma
+pnpm prisma migrate dev  # Roda as migrations locais
+pnpm prisma studio     # Abre o visualizador Prisma
+pnpm test           # Testes unitários
+pnpm test:e2e       # Testes end-to-end
+pnpm test:cov       # Cobertura de testes
+pnpm lint           # Lint do projeto
+```
+
+> 💡 Você também pode rodar o projeto com Docker para simular o ambiente de produção localmente. Detalhes em [docs/docker.md](./docs/docker.md)
+
+---
+
+## 📁 Estrutura de Pastas (resumo)
+
+```bash
+src/
+├── auth/             # Módulo de autenticação
+├── users/            # Módulo de usuários
+├── prisma/           # PrismaService (injeção global)
+├── config/           # Módulo global de variáveis de ambiente
+├── app.module.ts     # Módulo principal
+├── app.controller.ts # Endpoint raiz (GET /)
+├── app.service.ts    # Serviço raiz
+└── main.ts           # Bootstrap da aplicação
+```
 
 ---
 
 ## ✅ Funcionalidades já implementadas
 
-- Estrutura inicial completa com NestJS
-- Conexão com PostgreSQL usando Prisma
-- Modelagem e migrate do modelo **User**
-- Ambiente configurado com ESLint, Prettier e Jest
-- Testes unitários e E2E funcionando
-- Backend rodando via Docker na porta **3001**
-- Integração com banco de dados via container Docker (porta **5432**)
-- Deploy gratuito via **Railway**
-- CI/CD automatizado com **GitHub Actions**
+- Estrutura NestJS com Prisma e PostgreSQL
+- Cadastro e login com autenticação JWT
+- Validações com class-validator
+- Testes unitários e E2E com cobertura
+- Integração com PostgreSQL local ou Railway
+- Ambiente dockerizado
+- Deploy automatizado com GitHub Actions
 
 ---
 
-## 📁 Estrutura de Pastas
+## 🧪 Testes
 
 ```bash
-src/
-├── auth/               # Módulo de autenticação (em desenvolvimento)
-├── users/              # Módulo de usuários
-├── prisma/             # Serviço de conexão com Prisma
-├── config/             # Módulo global de variáveis de ambiente
-├── app.controller.ts   # Endpoint raiz
-├── app.module.ts       # Módulo principal
-├── app.service.ts      # Serviço raiz
-└── main.ts             # Ponto de entrada da aplicação
+pnpm test           # Executa testes unitários
+pnpm test:e2e       # Executa testes end-to-end
+pnpm test:cov       # Gera relatório de cobertura
 ```
-````
 
 ---
 
-## 🐳 Docker
+## 🐳 Docker (ambiente local)
 
-### 🧱 docker-compose.yml (isolado)
+### docker-compose.yml (dev)
 
 ```yaml
 version: '3.8'
@@ -89,34 +113,11 @@ volumes:
 
 ---
 
-## 🧪 Testes
-
-```bash
-pnpm test           # Executa testes unitários
-pnpm test:e2e       # Executa testes end-to-end
-pnpm test:cov       # Gera relatório de cobertura
-```
-
----
-
-## ⚙️ Comandos úteis
-
-```bash
-pnpm prisma migrate dev        # Rodar migrations
-pnpm prisma generate           # Gerar cliente Prisma
-pnpm prisma studio             # Abrir visualizador do banco
-pnpm run start:dev             # Iniciar com hot reload
-pnpm run build && pnpm start   # Build e iniciar em produção
-```
-
----
-
-## 🌐 Variáveis de ambiente
+## 🌐 Variáveis de ambiente (exemplo)
 
 ```env
-# .env
 DATABASE_URL="postgresql://postgres:012345678@localhost:5432/trelloia"
-JWT_SECRET="sua-chave-secreta"
+JWT_SECRET="sua-chave-super-secreta"
 PORT=3000
 ```
 
@@ -124,29 +125,39 @@ PORT=3000
 
 ## 🧠 Objetivo
 
-Criar uma API sólida que permita ao frontend:
+Criar uma API sólida para suportar:
 
-- Cadastrar e autenticar usuários
-- Gerenciar boards, listas e tarefas
-- Usar IA para sugerir automações e melhorias nas rotinas do usuário
+- Cadastro, autenticação e gerenciamento de usuários
+- Criação de boards, listas e cards
+- Funcionalidades de IA que automatizam rotinas e recomendam ações
+
+---
+
+# Trello.ia – Backend
+
+[![CI/CD](https://github.com/Wildemberg-otus7/trello.ia-backend/actions/workflows/backend.yml/badge.svg)](https://github.com/Wildemberg-otus7/trello.ia-backend/actions/workflows/backend.yml)
+
+Backend do projeto open source de gerenciamento de tarefas com IA...
 
 ---
 
 ## 🛠️ Contribuições
 
-O backend também será **open source** com repositório público. Contribuições serão bem-vindas após o MVP.
+Este projeto é **open source** e estará aberto a contribuições após a finalização do MVP.
+
+Para contribuir:
+
+1. Fork este repositório
+2. Crie uma branch descritiva
+3. Envie um Pull Request com detalhes claros
 
 ---
 
 ## 📄 Licença
 
-Em breve definida.
+Licença será definida em breve após publicação oficial.
 
 ---
 
-Desenvolvido por **Wildemberg de Jesus Oliveira**  
-Perfil: [LinkedIn](https://www.linkedin.com/in/wildemberg-de-jesus-oliveira/) – Desenvolvedor Fullstack Pleno
-
-```
-
-```
+Desenvolvido com ❤️ por **Wildemberg de Jesus Oliveira**  
+[LinkedIn](https://www.linkedin.com/in/wildemberg-de-jesus-oliveira/) – Desenvolvedor Fullstack Pleno
