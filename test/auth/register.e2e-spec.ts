@@ -21,7 +21,6 @@ describe('AuthController (Register) - E2E', () => {
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
 
-
     // Garante que o usuário que será usado no teste de duplicidade já exista
     await request(app.getHttpServer())
       .post('/auth/register')

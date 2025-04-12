@@ -21,8 +21,6 @@ describe('AuthController (Login) - E2E', () => {
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
 
-
-
     // Garante que o usuário de teste exista no banco
     await request(app.getHttpServer())
       .post('/auth/register')
