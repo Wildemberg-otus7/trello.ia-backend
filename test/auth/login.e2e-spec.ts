@@ -6,6 +6,12 @@ import { AppModule } from '../../src/app.module';
 describe('AuthController (Login) - E2E', () => {
   let app: INestApplication;
 
+  const validUser = {
+    name: 'Will Teste',
+    email: 'willTeste@gmail.com',
+    password: 'novaSenha@123@',
+  };
+
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
@@ -15,6 +21,17 @@ describe('AuthController (Login) - E2E', () => {
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
 
+
+
+    // Garante que o usuário de teste exista no banco
+    await request(app.getHttpServer())
+      .post('/auth/register')
+      .send(validUser)
+      .catch(() => {
+        // Se o usuário já existir, o erro 409 será ignorado
+      });
+
+    // Suprime erros do console para não poluir o log do CI
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
@@ -33,14 +50,13 @@ describe('AuthController (Login) - E2E', () => {
   });
 
   it('deve logar com sucesso com credenciais válidas', async () => {
-    // Certifique-se de que esse usuário já existe no banco com essa senha
     return request(app.getHttpServer())
       .post('/auth/login')
-      .send({ email: 'wildembergdejesusoliveira@gmail.com', password: 'novaSenha@123@' })
+      .send({ email: validUser.email, password: validUser.password })
       .expect(201)
       .expect((res) => {
         expect(res.body.user).toBeDefined();
-        expect(res.body.user.email).toBe('wildembergdejesusoliveira@gmail.com');
+        expect(res.body.user.email).toBe(validUser.email);
       });
   });
 });

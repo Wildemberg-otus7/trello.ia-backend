@@ -6,6 +6,12 @@ import { AppModule } from '../../src/app.module';
 describe('AuthController (Register) - E2E', () => {
   let app: INestApplication;
 
+  const existingUser = {
+    name: 'Will',
+    email: 'willTeste@gmail.com',
+    password: 'SenhaRepetida123@',
+  };
+
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
@@ -15,6 +21,14 @@ describe('AuthController (Register) - E2E', () => {
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
 
+
+    // Garante que o usuário que será usado no teste de duplicidade já exista
+    await request(app.getHttpServer())
+      .post('/auth/register')
+      .send(existingUser)
+      .catch(() => {}); // Ignora se já existir
+
+    // Suprime erros do console para não poluir o log do CI
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
@@ -37,19 +51,14 @@ describe('AuthController (Register) - E2E', () => {
         expect(res.body).toHaveProperty('id');
         expect(res.body).toHaveProperty('email', uniqueEmail);
         expect(res.body).toHaveProperty('name', 'Novo Usuário');
-        expect(res.body).not.toHaveProperty('password'); // sanitizado
+        expect(res.body).not.toHaveProperty('password');
       });
   });
 
   it('deve falhar ao registrar usuário já existente', async () => {
-    // email que já existe no banco
     return request(app.getHttpServer())
       .post('/auth/register')
-      .send({
-        name: 'Will',
-        email: 'wildembergdejesusoliveira@gmail.com',
-        password: 'SenhaRepetida123@',
-      })
+      .send(existingUser)
       .expect(409)
       .expect((res) => {
         expect(res.body.message).toBe('E-mail já está em uso');
