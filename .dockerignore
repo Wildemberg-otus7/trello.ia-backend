@@ -1,8 +1,14 @@
+# Ignora arquivos de build e desenvolvimento
 node_modules
 dist
-Dockerfile
-Dockerfile.dev
+.next
+
+# Configs e arquivos sensíveis
+.env
 *.log
 *.tsbuildinfo
-.env
-.next
+
+# Arquivos de configuração duplicados
+Dockerfile
+Dockerfile.dev
+.pnpm-store

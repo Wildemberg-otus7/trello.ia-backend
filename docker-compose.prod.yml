@@ -17,14 +17,12 @@ services:
   backend:
     build:
       context: .
+      dockerfile: Dockerfile
     container_name: trelloia-backend
     ports:
       - '3001:3000'
     env_file:
       - .env
-    volumes:
-      - .:/app
-    command: pnpm start:dev
     depends_on:
       - db
 

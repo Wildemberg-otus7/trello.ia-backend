@@ -1,30 +1,34 @@
-# Dockerfile
+# Etapa de build
+FROM node:20-alpine AS builder
 
-FROM node:20-alpine
-
-# Instala dependências necessárias para o pnpm funcionar
 RUN apk add --no-cache curl bash
-
-# Ativa o corepack e instala o pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Cria o diretório do app
 WORKDIR /app
 
-# Copia os arquivos
-COPY . .
+# Copia só arquivos essenciais pro install (melhor cache!)
+COPY package.json pnpm-lock.yaml ./
 
-# Instala as dependências
+# Instala dependências sem copiar tudo
 RUN pnpm install --frozen-lockfile
 
-# Gera Prisma Client no ambiente de produção
+# Agora copia o resto do código
+COPY . .
+
+# Gera Prisma Client
 RUN npx prisma generate
 
-# Gera o build do app
+# Compila o app
 RUN pnpm build
 
-# Expõe a porta padrão do NestJS
+# Etapa final (imagem mais enxuta)
+FROM node:20-alpine
+
+WORKDIR /app
+COPY --from=builder /app .
+
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 EXPOSE 3000
 
-# Comando padrão para rodar o app em desenvolvimento
-CMD ["pnpm", "start:dev"]
+CMD ["pnpm", "start:prod"]
