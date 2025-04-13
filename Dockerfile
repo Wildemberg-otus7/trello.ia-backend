@@ -1,34 +1,28 @@
 # Etapa de build
-FROM node:20-alpine AS builder
+FROM node:23-alpine AS builder
 
 RUN apk add --no-cache curl bash
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
-# Copia só arquivos essenciais pro install (melhor cache!)
 COPY package.json pnpm-lock.yaml ./
-
-# Instala dependências sem copiar tudo
 RUN pnpm install --frozen-lockfile
 
-# Agora copia o resto do código
 COPY . .
-
-# Gera Prisma Client
-RUN npx prisma generate
-
-# Compila o app
+RUN pnpm exec prisma generate
 RUN pnpm build
 
-# Etapa final (imagem mais enxuta)
-FROM node:20-alpine
+# Etapa final
+FROM node:23-alpine
 
 WORKDIR /app
-COPY --from=builder /app .
-
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-EXPOSE 3000
+# Copia apenas o necessário
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
 
+EXPOSE 3000
 CMD ["pnpm", "start:prod"]
