@@ -13,13 +13,15 @@ services:
       - pgdata:/var/lib/postgresql/data
     ports:
       - '5432:5432'
+    networks:
+      - trelloia-shared
 
   backend:
     build:
       context: .
     container_name: trelloia-backend
     ports:
-      - '3001:3000'
+      - '8080:3000'
     env_file:
       - .env
     volumes:
@@ -27,6 +29,12 @@ services:
     command: pnpm start:dev
     depends_on:
       - db
+    networks:
+      - trelloia-shared
 
 volumes:
   pgdata:
+
+networks:
+  trelloia-shared:
+    external: true
