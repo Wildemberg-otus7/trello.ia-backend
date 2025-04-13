@@ -8,7 +8,6 @@ jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
     env:
-      NODE_ENV: test
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
