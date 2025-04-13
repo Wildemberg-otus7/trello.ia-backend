@@ -9,7 +9,7 @@
     "build": "nest build",
     "format": "prettier --write .",
     "lint": "eslint . --ext .ts,.tsx",
-    "start": "nest start",
+    "start": "pnpm start:prod",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/src/main",
