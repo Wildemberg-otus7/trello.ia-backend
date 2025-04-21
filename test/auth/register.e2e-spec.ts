@@ -2,9 +2,11 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
 import { AppModule } from '../../src/app.module';
+import { PrismaClient } from '@prisma/client';
 
 describe('AuthController (Register) - E2E', () => {
   let app: INestApplication;
+  const prisma = new PrismaClient();
 
   const existingUser = {
     name: 'Will',
@@ -21,17 +23,20 @@ describe('AuthController (Register) - E2E', () => {
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
 
-    // Garante que o usuário que será usado no teste de duplicidade já exista
+    // Remove e recria o usuário para o teste de duplicidade
+    await prisma.user.deleteMany({ where: { email: existingUser.email } });
+
     await request(app.getHttpServer())
       .post('/auth/register')
       .send(existingUser)
-      .catch(() => {}); // Ignora se já existir
+      .expect(201);
 
     // Suprime erros do console para não poluir o log do CI
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterAll(async () => {
+    await prisma.$disconnect();
     await app.close();
   });
 
