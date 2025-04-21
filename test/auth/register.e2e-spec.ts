@@ -23,12 +23,15 @@ describe('AuthController (Register) - E2E', () => {
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
 
-    // Remove e recria o usuário para o teste de duplicidade
-    await prisma.user.deleteMany({ where: { email: existingUser.email } });
+    // Remove o usuário de teste, se já existir
+    await prisma.user.deleteMany({
+      where: { email: existingUser.email },
+    });
 
+    // Cria o usuário de teste
     await request(app.getHttpServer()).post('/auth/register').send(existingUser).expect(201);
 
-    // Suprime erros do console para não poluir o log do CI
+    // Silencia erros no console durante o CI
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
@@ -69,10 +72,7 @@ describe('AuthController (Register) - E2E', () => {
   it('deve falhar se campos obrigatórios estiverem ausentes', async () => {
     return request(app.getHttpServer())
       .post('/auth/register')
-      .send({
-        email: '',
-        password: '',
-      })
+      .send({ email: '', password: '' })
       .expect(400);
   });
 });
