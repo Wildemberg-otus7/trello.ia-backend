@@ -2,9 +2,11 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
 import { AppModule } from '../../src/app.module';
+import { PrismaClient } from '@prisma/client';
 
 describe('AuthController (Login) - E2E', () => {
   let app: INestApplication;
+  const prisma = new PrismaClient();
 
   const validUser = {
     name: 'Will Teste',
@@ -21,20 +23,23 @@ describe('AuthController (Login) - E2E', () => {
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
 
-    // Garante que o usuário de teste exista no banco
+    // Remove o usuário de teste se já existir
+    await prisma.user.deleteMany({
+      where: { email: validUser.email },
+    });
+
+    // Cria novamente o usuário de teste
     await request(app.getHttpServer())
       .post('/auth/register')
-      .send(validUser)
-      .catch(() => {
-        // Se o usuário já existir, o erro 409 será ignorado
-      });
+      .send(validUser);
 
-    // Suprime erros do console para não poluir o log do CI
+    // Suprime erros de log para CI
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterAll(async () => {
     await app.close();
+    await prisma.$disconnect();
   });
 
   it('deve falhar com credenciais inválidas', async () => {

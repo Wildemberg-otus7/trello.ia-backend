@@ -81,7 +81,7 @@ export class AuthService {
 
     const token = this.jwtService.sign({ sub: user.id }, { expiresIn: '15m' });
 
-    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3002';
+    const baseUrl = process.env.FRONTEND_URL;
     const resetLink = `${baseUrl}/reset-password?token=${token}`;
 
     await this.sendEmail(email, 'Recuperação de senha', `Clique para redefinir: ${resetLink}`);
