@@ -26,10 +26,7 @@ describe('AuthController (Register) - E2E', () => {
     // Remove e recria o usuário para o teste de duplicidade
     await prisma.user.deleteMany({ where: { email: existingUser.email } });
 
-    await request(app.getHttpServer())
-      .post('/auth/register')
-      .send(existingUser)
-      .expect(201);
+    await request(app.getHttpServer()).post('/auth/register').send(existingUser).expect(201);
 
     // Suprime erros do console para não poluir o log do CI
     jest.spyOn(console, 'error').mockImplementation(() => {});
