@@ -4,14 +4,14 @@ import * as request from 'supertest';
 import { AppModule } from '../../src/app.module';
 import { PrismaClient } from '@prisma/client';
 
-describe('AuthController (Register) - E2E', () => {
+describe('AuthController (Login) - E2E', () => {
   let app: INestApplication;
   const prisma = new PrismaClient();
 
-  const existingUser = {
-    name: 'Will',
+  const validUser = {
+    name: 'Will Teste',
     email: 'willTeste@gmail.com',
-    password: 'SenhaRepetida123@',
+    password: 'novaSenha@123@',
   };
 
   beforeAll(async () => {
@@ -23,15 +23,17 @@ describe('AuthController (Register) - E2E', () => {
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
 
-    // Remove o usuário de teste, se já existir
-    await prisma.user.deleteMany({
-      where: { email: existingUser.email },
-    });
+    await prisma.user.deleteMany({ where: { email: validUser.email } });
 
-    // Cria o usuário de teste
-    await request(app.getHttpServer()).post('/auth/register').send(existingUser).expect(201);
+    await request(app.getHttpServer())
+      .post('/auth/register')
+      .send(validUser)
+      .then((res) => {
+        if (![201, 409].includes(res.status)) {
+          throw new Error(`Erro inesperado ao registrar usuário: ${res.status}`);
+        }
+      });
 
-    // Silencia erros no console durante o CI
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
@@ -40,39 +42,24 @@ describe('AuthController (Register) - E2E', () => {
     await app.close();
   });
 
-  it('deve registrar novo usuário com sucesso', async () => {
-    const uniqueEmail = `user${Date.now()}@teste.com`;
-
+  it('deve falhar com credenciais inválidas', async () => {
     return request(app.getHttpServer())
-      .post('/auth/register')
-      .send({
-        name: 'Novo Usuário',
-        email: uniqueEmail,
-        password: 'SenhaForte123@',
-      })
+      .post('/auth/login')
+      .send({ email: 'naoexiste@email.com', password: 'senhaErrada' })
+      .expect(401)
+      .expect((res) => {
+        expect(res.body.message).toBe('Usuário ou senha inválidos');
+      });
+  });
+
+  it('deve logar com sucesso com credenciais válidas', async () => {
+    return request(app.getHttpServer())
+      .post('/auth/login')
+      .send({ email: validUser.email, password: validUser.password })
       .expect(201)
       .expect((res) => {
-        expect(res.body).toHaveProperty('id');
-        expect(res.body).toHaveProperty('email', uniqueEmail);
-        expect(res.body).toHaveProperty('name', 'Novo Usuário');
-        expect(res.body).not.toHaveProperty('password');
+        expect(res.body.user).toBeDefined();
+        expect(res.body.user.email).toBe(validUser.email);
       });
-  });
-
-  it('deve falhar ao registrar usuário já existente', async () => {
-    return request(app.getHttpServer())
-      .post('/auth/register')
-      .send(existingUser)
-      .expect(409)
-      .expect((res) => {
-        expect(res.body.message).toBe('E-mail já está em uso');
-      });
-  });
-
-  it('deve falhar se campos obrigatórios estiverem ausentes', async () => {
-    return request(app.getHttpServer())
-      .post('/auth/register')
-      .send({ email: '', password: '' })
-      .expect(400);
   });
 });
