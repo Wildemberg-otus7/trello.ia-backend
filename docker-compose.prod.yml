@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - trelloia_pgdata_prod:/var/lib/postgresql/data
     ports:
       - '5432:5432'
     networks:
@@ -17,6 +17,7 @@ services:
   backend:
     build:
       context: .
+      dockerfile: Dockerfile
     container_name: trelloia-backend
     ports:
       - '8080:3000'
@@ -24,14 +25,14 @@ services:
       - .env.prod
     volumes:
       - .:/app
-    command: pnpm start:dev
+    command: pnpm start
     depends_on:
       - db
     networks:
       - trelloia-shared
 
 volumes:
-  pgdata:
+  trelloia_pgdata_prod:
 
 networks:
   trelloia-shared:
