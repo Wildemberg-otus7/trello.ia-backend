@@ -29,9 +29,7 @@ describe('AuthController (Login) - E2E', () => {
     });
 
     // Cria novamente o usuário de teste
-    await request(app.getHttpServer())
-      .post('/auth/register')
-      .send(validUser);
+    await request(app.getHttpServer()).post('/auth/register').send(validUser);
 
     // Suprime erros de log para CI
     jest.spyOn(console, 'error').mockImplementation(() => {});
