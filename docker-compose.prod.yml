@@ -25,7 +25,6 @@ services:
       - .env.prod
     volumes:
       - .:/app
-    command: pnpm start
     depends_on:
       - db
     networks:

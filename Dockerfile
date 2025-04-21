@@ -44,5 +44,10 @@ RUN pnpm exec prisma generate
 # Expõe a porta padrão do NestJS
 EXPOSE 3000
 
-# Executa migrations e inicia a aplicação
-CMD ["sh", "-c", "pnpm exec prisma migrate deploy && pnpm start"]
+# Copia e prepara o script de entrada
+COPY entrypoint.prod.sh /entrypoint.prod.sh
+RUN chmod +x /entrypoint.prod.sh
+
+# Usa o script como comando de entrada
+CMD ["/entrypoint.prod.sh"]
+

@@ -29,5 +29,9 @@ RUN pnpm exec prisma generate
 EXPOSE 3000
 
 # ⬇️ Executa migrations e inicia com hot reload
-CMD ["sh", "-c", "pnpm exec prisma migrate deploy && pnpm start:dev"]
+COPY entrypoint.dev.sh /entrypoint.dev.sh
+RUN chmod +x /entrypoint.dev.sh
+
+CMD ["/entrypoint.dev.sh"]
+
 
